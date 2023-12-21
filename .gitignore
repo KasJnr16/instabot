@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+env/
+*.env/
+
+# IDE
+.vscode/
+.idea/
+
+# Dependency directories
+lib/
+lib64/
+bin/
+include/
+__pyinstaller/
+
+# Compiled files
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+*.pyz
+*.pyw
+*.pyc
+*.pyo
+*.pyd
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+*.db3
+
+# Output of Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Config files
+config.json
+
+# Ignore local settings
+static/json/session.json
+
+# Ignore credentials
+static/credentials.txt
+
+# Ignore user-specific files
+*.iml
+
+# ingore txt
+tools/comments.py
+tools/hashtags.py
