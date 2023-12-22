@@ -16,13 +16,13 @@ def load_session():
             file_content = f.read().strip()
             if file_content:
                 session = json.loads(file_content)
-                return cl, session
+                return session
             else:
                 print("Session file is empty.")
-                return cl, None
-    return cl, None
+                return None
+    return None
 
-def is_session_valid(cl, session):
+def is_session_valid(session):
     """Check if the current session is valid"""
     try:
         cl.load_settings(session)
@@ -51,16 +51,16 @@ def login_via_username_password(username, password):
 
 def login_user():
     """Login to Instagram."""
-    cl, session = load_session()
+    session = load_session()
 
-    if session and is_session_valid(cl, session):
+    if session and is_session_valid(session):
         print("Successfully logged in via session.")
 
     # Get creds from file 
     with open(CREDENTIALS_FILE, "r") as f:
         USERNAME, PASSWORD = f.read().splitlines()
 
-    if login_via_username_password(cl, USERNAME, PASSWORD):
+    if login_via_username_password(USERNAME, PASSWORD):
         print("Successfully logged in via username and password.")
 
     else:
