@@ -2,6 +2,7 @@ from instagrapi import Client
 from instagrapi.exceptions import LoginRequired
 import os
 import json
+from time import sleep
 
 SESSION_FILE = "static/json/session.json"
 CREDENTIALS_FILE = "static/credentials.txt"
@@ -62,6 +63,7 @@ def login_user():
 
     if login_via_username_password(USERNAME, PASSWORD):
         print("Successfully logged in via username and password.")
+        sleep(2)
 
     else:
         raise Exception("Can't login user with provided credentials")

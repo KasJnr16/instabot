@@ -1,5 +1,5 @@
 from instagrapi import Client
-from instagrapi.exceptions import FeedbackRequired
+from instagrapi.exceptions import FeedbackRequired, HashtagError, LoginRequired, ClientError
 from datetime import datetime, timedelta
 from .manage_users import load_followed_users, save_followed_user
 from .import hashtags, comments
@@ -11,6 +11,26 @@ def random_hashtags():
 def random_comment():
     return random.choice(comments.COMMENTS)
 
+def retry_hashtags():
+    print(f"Trying another hashtag....")
+    try:
+        hashtag = random_hashtags()
+        hashtag_medias = cl.hashtag_medias_recent(hashtag, 20)
+        print(f"fetching post from {hashtag}")
+        return hashtag_medias
+    except (LoginRequired,
+            ClientError,
+
+            ) as e:
+        print(f"Feedback required: {e}")
+        print(f"Skipping {hashtag} due to error")
+        retry_hashtags()
+
+    except Exception as e:
+        print(f"Hashtag error: {e}")
+
+    finally:
+        print("Failed to use hashtag")
 
 """
     Every actions the bot takes are present here, feel free to modify if you want :)~
@@ -86,13 +106,29 @@ def comment_post(post, comment):
 
 def browse_hashtags(hashtag):
     print("Browsering hashtags....")
+    try: 
+        hashtag_medias = cl.hashtag_medias_recent(hashtag, 20)
+        print(f"fetching post from {hashtag}")
+        return hashtag_medias
+
+    except Exception as e:
+        try:
+            hashtag_medias = cl.hashtag_medias_recent_a1(hashtag, 20)
+        except ClientError:
+            hashtag_medias = cl.hashtag_medias_recent_v1(hashtag, 20)
+        return hashtag_medias
     
-    hashtag_medias = cl.hashtag_medias_recent(hashtag, 20)
-    print(f"fetching post from {hashtag}")
-    return hashtag_medias
+def browse_reels():
+    print("fetching Reels...")
+    reels = cl.reels(10)
+    return reels
 
 def browse_user_profile(user):
-    print(f"fetching data from {user.username}'s profile...")
+    print(f"fetching data from {user}'s profile...")
+    try:                                               
+        user_profile_media = cl.user_medias(user_id=user)
+        return user_profile_media
+    except LoginRequired as e:
+        print("Error:", e)
+        print("Skipping reel")
 
-    user_profile_media = cl.user_medias_gql(user_id=user.id)
-    return user_profile_media

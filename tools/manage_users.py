@@ -23,6 +23,7 @@ def load_followed_users():
             followed_users = set(line.strip() for line in lines if line.strip())
     else:
         create_followed_file()
+        load_followed_users()
     return followed_users
 
 def save_followed_user(username):

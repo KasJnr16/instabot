@@ -8,11 +8,13 @@ from tools.bot_actions import (
     unfollow_user,
     browse_hashtags,
     browse_user_profile,
+    browse_reels,
     # more actions will be addded later
 
     random_comment,
     random_hashtags,
 )
+from tools.manage_users import load_followed_users
 
 import random
 import time
@@ -50,28 +52,69 @@ def main():
            print("Bot says:", choice)
            return choice
         else:
-            return "N"
+            return "No"
         
     # login
     login = login_user()
     try:
-
+        print("""
+                            _         _______  _______  _______  _______    _______  _______  _______ 
+                            ( \      (  ___  )(  ____ \(  ____ \(  ____ \  (  ____ \(  ____ \(  ____ \ 
+                            | (      | (   ) || (    \/| (    \/| (    \/  | (    \/| (    \/| (    \/
+                            | |      | |   | || (__    | (__    | (__      | (__    | (__    | (__    
+                            | |      | |   | ||  __)   |  __)   |  __)     |  __)   |  __)   |  __)   
+                            | |      | |   | || (      | (      | (        | (      | (      | (      
+                            | (____/\| (___) || (____/\| (____/\| (____/\  | (____/\| (____/\| (____/\ 
+                            (_______/(_______)(_______/(_______/(_______/  (_______/(_______/(_______/
+                                Welcome to Insta Bot! 🤖✨
+            """)
+        time.sleep(3)
         while True:
             for i in range(5):
                 print("Starting bot in %i" % i)
                 time.sleep(1)
 
             choice = get_bot_choice()
-
             if choice == "Yes":
 
+                #limit activity to avoid being to spammy
                 likes_count, follows_count, comments_count = 0, 0, 0
 
-               
+                hashtag = random_hashtags()
+                comment = random_comment()
+
+                # followed_user = load_followed_users()
+                # user_profile = browse_user_profile()
+                
+                hashtag_medias = browse_hashtags(hashtag)
+                # reels = browse_reels()
+                
+                for i, post in enumerate(hashtag_medias):
+
+                    """ 
+                    Decides which activity to perform on every iterationm :)~ using the bot choice
+                    
+                    """
+                    choice = get_bot_choice()
+                    if choice == "Yes" and likes_count < max_likes:
+                        like_post(post)
+                        sleep_interval = get_sleep_interval()
+                        likes_count += 1
+
+                    choice = get_bot_choice()
+                    if choice == "Yes" and comments_count < max_comments:
+                        comment_post(post, comment)
+                        sleep_interval = get_sleep_interval()
+                        comments_count +=1
+                    
+                    choice = get_bot_choice()
+                    if choice == "Yes" and follows_count >= max_follows:
+                        follow_user(post)
+                        follows_count+=1
 
                     # Check if the interaction limits are reached
-                if likes_count >= max_likes and comments_count >= max_comments and follows_count >= max_follows:
-                    break
+                    if likes_count >= max_likes and comments_count >= max_comments and follows_count >= max_follows:
+                        break
 
             else:
                 # If the bot is not active, wait for a longer sleep interval

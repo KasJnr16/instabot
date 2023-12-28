@@ -27,3 +27,5 @@ List any prerequisites or dependencies users need to install or set up.
 pip install pipenv
 pipenv shell 
 pipenv install 
+
+<h1>NOTICE:  It seems instagrapi is not work as it should, I will resume development once it is updated</h1>
