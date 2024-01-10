@@ -1,6 +1,4 @@
-from instagrapi import Client
 from instagrapi.exceptions import FeedbackRequired, HashtagError, LoginRequired, ClientError
-from datetime import datetime, timedelta
 from .manage_users import load_followed_users, save_followed_user
 from .import hashtags, comments
 import random
@@ -11,7 +9,7 @@ def random_hashtags():
 def random_comment():
     return random.choice(comments.COMMENTS)
 
-def retry_hashtags():
+def retry_hashtags(cl):
     print(f"Trying another hashtag....")
     try:
         hashtag = random_hashtags()
@@ -24,7 +22,7 @@ def retry_hashtags():
             ) as e:
         print(f"Feedback required: {e}")
         print(f"Skipping {hashtag} due to error")
-        retry_hashtags()
+        retry_hashtags(cl)
 
     except Exception as e:
         print(f"Hashtag error: {e}")
@@ -37,9 +35,7 @@ def retry_hashtags():
 """
 
 # Global Variable
-cl = Client()
-
-def like_post(post, hashtag = None):
+def like_post(cl, post, hashtag = None):
     if hashtag:
         try:
             cl.media_like(post.id)
@@ -62,7 +58,7 @@ def like_post(post, hashtag = None):
         except Exception as e:
             print(f"Error interacting with post {post.id}: {e}")
 
-def follow_user(user):
+def follow_user(cl, user):
     try:
         followed_users = load_followed_users()
         if user.username not in followed_users:
@@ -78,7 +74,7 @@ def follow_user(user):
     except Exception as e:
         print(f"Error following user {user.username}: {e}")
 
-def unfollow_user(user):
+def unfollow_user(cl, user):
     try:
         followed_users = load_followed_users()
         if user.username in followed_users:
@@ -93,7 +89,7 @@ def unfollow_user(user):
     except Exception as e:
         print(f"Error unfollowing user {user.username}: {e}")
 
-def comment_post(post, comment):
+def comment_post(cl, post, comment):
     try:
         cl.media_comment(post.id, comment)
         print(f"Commented '{comment}' under post of {post.user.username}")
@@ -104,7 +100,7 @@ def comment_post(post, comment):
     except Exception as e:
         print(f"Error commenting on post {post.id}: {e}")
 
-def browse_hashtags(hashtag):
+def browse_hashtags(cl, hashtag):
     print("Browsering hashtags....")
     try: 
         hashtag_medias = cl.hashtag_medias_recent(hashtag, 20)
@@ -118,12 +114,12 @@ def browse_hashtags(hashtag):
             hashtag_medias = cl.hashtag_medias_recent_v1(hashtag, 20)
         return hashtag_medias
     
-def browse_reels():
+def browse_reels(cl):
     print("fetching Reels...")
     reels = cl.reels(10)
     return reels
 
-def browse_user_profile(user):
+def browse_user_profile(cl, user):
     print(f"fetching data from {user}'s profile...")
     try:                                               
         user_profile_media = cl.user_medias(user_id=user)

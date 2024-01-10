@@ -55,7 +55,7 @@ def main():
             return "No"
         
     # login
-    login = login_user()
+    cl = login_user()
     try:
         print("""
                             _         _______  _______  _______  _______    _______  _______  _______ 
@@ -86,10 +86,10 @@ def main():
                 # followed_user = load_followed_users()
                 # user_profile = browse_user_profile()
                 
-                hashtag_medias = browse_hashtags(hashtag)
-                # reels = browse_reels()
+                # hashtag_medias = browse_hashtags(cl, hashtag)
+                reels = browse_reels(cl)
                 
-                for i, post in enumerate(hashtag_medias):
+                for i, post in enumerate(reels):
 
                     """ 
                     Decides which activity to perform on every iterationm :)~ using the bot choice
@@ -97,19 +97,19 @@ def main():
                     """
                     choice = get_bot_choice()
                     if choice == "Yes" and likes_count < max_likes:
-                        like_post(post)
+                        like_post(cl, post)
                         sleep_interval = get_sleep_interval()
                         likes_count += 1
 
                     choice = get_bot_choice()
                     if choice == "Yes" and comments_count < max_comments:
-                        comment_post(post, comment)
+                        comment_post(cl, post, comment)
                         sleep_interval = get_sleep_interval()
                         comments_count +=1
                     
                     choice = get_bot_choice()
                     if choice == "Yes" and follows_count >= max_follows:
-                        follow_user(post)
+                        follow_user(cl, post)
                         follows_count+=1
 
                     # Check if the interaction limits are reached
